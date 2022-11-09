@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yash Pratap's Login2Xplore</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+      <div class="registration-form">
+        <h1>Registration Form</h1>
+        <form action="#" method="post">
+            <p>Full Name:</p>
+            <input type="text" name="fullname" placeholder="Full Name">
+            <p>User Name:</p>
+            <input type="text" name="username" placeholder="User Name">
+            <p>Email:</p>
+            <input type="text" name="email" placeholder="Email">
+            <p>Mobile:</p>
+            <input type="text" name="phone" placeholder="Mobile">
+            <p>Password:</p>
+            <input type="password" name="password" placeholder="Password">
+            <button type="submit">Registration</button>
+        </form>
+      </div>
+      <script>
+        function createPUTRequest(connToken, jsonObj, dbName, relName) {
+            var putRequest = "{\n"
+                    + "\"token\" : \""
+                    + connToken
+                    + "\","
+                    + "\"dbName\": \""
+                    + dbName
+                    + "\",\n" + "\"cmd\" : \"PUT\",\n"
+                    + "\"rel\" : \""
+                    + relName + "\","
+                    + "\"jsonStr\": \n"
+                    + jsonObj
+                    + "\n"
+                    + "}";
+            return putRequest;
+        }
+        function executeCommand(reqString, dbBaseUrl, apiEndPointUrl) {
+            var url = dbBaseUrl + apiEndPointUrl;
+            var jsonObj;
+            $.post(url, reqString, function (result) {
+                jsonObj = JSON.parse(result);
+            }).fail(function (result) {
+                var dataJsonObj = result.responseText;
+                jsonObj = JSON.parse(dataJsonObj);
+            });
+            return jsonObj;
+        }
+
+        function validateAndGetFormData() {
+            
+            var fullname = document.getElementById("FullName").value;
+            var username = document.getElementById("UserName").value;
+            var email = document.getElementById("Email").value;
+            var Mobile = document.getElementById("Mobile").value;
+            var password = document.getElementById("Password").value;
+            
+            
+            var jsonStrObj = {
+                CandidateName: fullname,
+                Username: username,
+                Email: email,
+                Mobile: mobile,
+                Password: password,
+            };
+            return JSON.stringify(jsonStrObj);
+        }
+
+        function registerCandidate() {
+
+            var jsonStr = validateAndGetFormData();
+            if (jsonStr === "") {
+                return;
+            }
+            var putReqStr = createPUTRequest("YOUR TOKEN HERE",
+                    jsonStr, "StudentData", "Student-Data");
+            alert(putReqStr);
+            jQuery.ajaxSetup({async: false});
+            var resultObj = executeCommand(putReqStr,
+                    "http://api.login2explore.com:5577", "/api/iml");
+            jQuery.ajaxSetup({async: true});
+            alert( "INSERTED "+JSON.stringify(resultObj));
+
+        }
+    </script>
+</body>
+</html>
